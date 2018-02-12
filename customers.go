@@ -34,6 +34,18 @@ type CustomersAPI interface {
 
 	// https://www.openpay.mx/docs/api/#eliminar-una-tarjeta
 	DeleteCard(customerID, cardID string) error
+
+	// https://www.openpay.mx/docs/api/#crear-una-cuenta-bancaria
+	AddBankAccount(customerID string, acc *BankAccount) error
+
+	// https://www.openpay.mx/docs/api/#obtener-una-cuenta-bancaria
+	GetBankAccount(customerID, accountID string) (*BankAccount, error)
+
+	// https://www.openpay.mx/docs/api/#listado-de-cuentas-bancarias
+	ListBankAccounts(customerID string, req *ListRequest) ([]BankAccount, error)
+
+	// https://www.openpay.mx/docs/api/#eliminar-una-cuenta-bancaria
+	DeleteBankAccount(customerID, accountID string) error
 }
 
 type customersClient struct {
@@ -154,6 +166,59 @@ func (cu *customersClient) ListCards(customerID string, req *ListRequest) ([]Car
 func (cu *customersClient) DeleteCard(customerID, cardID string) error {
 	_, err := cu.c.request(&requestOptions{
 		endpoint: path.Join("customers", customerID, "cards", cardID),
+		method:   http.MethodDelete,
+		data:     nil,
+	})
+	return err
+}
+
+func (cu *customersClient) AddBankAccount(customerID string, acc *BankAccount) error {
+	b, err := cu.c.request(&requestOptions{
+		endpoint: path.Join("customers", customerID, "bankaccounts"),
+		method:   http.MethodPost,
+		data:     acc,
+	})
+	if err != nil {
+		return err
+	}
+
+	json.Unmarshal(b, acc)
+	return nil
+}
+
+func (cu *customersClient) GetBankAccount(customerID, accountID string) (*BankAccount, error) {
+	b, err := cu.c.request(&requestOptions{
+		endpoint: path.Join("customers", customerID, "bankaccounts", accountID),
+		method:   http.MethodGet,
+		data:     nil,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	acc := &BankAccount{}
+	json.Unmarshal(b, acc)
+	return acc, nil
+}
+
+func (cu *customersClient) ListBankAccounts(customerID string, req *ListRequest) ([]BankAccount, error) {
+	b, err := cu.c.request(&requestOptions{
+		endpoint: path.Join("customers", customerID, "bankaccounts"),
+		method:   http.MethodGet,
+		data:     req,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var list []BankAccount
+	json.Unmarshal(b, &list)
+	return list, nil
+}
+
+func (cu *customersClient) DeleteBankAccount(customerID, accountID string) error {
+	_, err := cu.c.request(&requestOptions{
+		endpoint: path.Join("customers", customerID, "bankaccounts", accountID),
 		method:   http.MethodDelete,
 		data:     nil,
 	})
