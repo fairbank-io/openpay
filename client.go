@@ -18,6 +18,9 @@ const liveAPI = "https://api.openpay.mx/"
 
 // Main service handler
 type Client struct {
+	// Methods related to 'charges' management
+	Charges ChargesAPI
+
 	// Methods related to 'customers' management
 	Customers CustomersAPI
 
@@ -117,6 +120,7 @@ func NewClient(key, merchantID string, options *Options) (*Client, error) {
 		client.apiEndpoint = testAPI
 	}
 
+	client.Charges = &chargesClient{c: client}
 	client.Customers = &customersClient{c: client}
 	return client, nil
 }
