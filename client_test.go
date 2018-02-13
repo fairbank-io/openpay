@@ -320,4 +320,50 @@ func TestClient(t *testing.T) {
 			}
 		})
 	})
+
+	t.Run("Webhooks", func(t *testing.T) {
+		hook := &Webhook{
+			User: "foo",
+			Password: "bar",
+			URL: "https://hookb.in/voJJ3XXQ",
+			EventTypes: []string{
+				"charge.succeeded",
+				"spei.received",
+			},
+		}
+
+		t.Run("Create", func(t *testing.T) {
+			err := client.Webhooks.Create(hook)
+			if err != nil {
+				t.Error(err)
+			}
+		})
+
+		t.Run("Get", func(t *testing.T) {
+			w2, err := client.Webhooks.Get(hook.ID)
+			if err != nil {
+				t.Error(err)
+			}
+			if w2.ID != hook.ID {
+				t.Error("invalid data received")
+			}
+		})
+
+		t.Run("List", func(t *testing.T) {
+			list, err := client.Webhooks.List()
+			if err != nil {
+				t.Error(err)
+			}
+			if len(list) == 0 {
+				t.Error("invalid data received")
+			}
+		})
+
+		t.Run("Delete", func(t *testing.T) {
+			err := client.Webhooks.Delete(hook.ID)
+			if err != nil {
+				t.Error(err)
+			}
+		})
+	})
 }

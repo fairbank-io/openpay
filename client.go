@@ -24,6 +24,9 @@ type Client struct {
 	// Methods related to 'customers' management
 	Customers CustomersAPI
 
+	// Methods related to 'webhooks' management
+	Webhooks WebhooksAPI
+
 	c           *http.Client
 	key         string
 	merchantID  string
@@ -122,6 +125,7 @@ func NewClient(key, merchantID string, options *Options) (*Client, error) {
 
 	client.Charges = &chargesClient{c: client}
 	client.Customers = &customersClient{c: client}
+	client.Webhooks = &webhooksClient{c: client}
 	return client, nil
 }
 

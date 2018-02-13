@@ -405,3 +405,49 @@ type ChargesListRequest struct {
 	// Charges related to a specific order
 	OrderID string `json:"order_id,omitempty"`
 }
+
+// Webhook instance representation
+// https://www.openpay.mx/docs/api/#objeto-webhook
+type Webhook struct {
+	// Unique identifier
+	ID string `json:"id,omitempty"`
+
+	// Webhook's endpoint
+	URL string `json:"url,omitempty"`
+
+	// Username value for basic credentials
+	User string `json:"user,omitempty"`
+
+	// Password value for basic credentials
+	Password string `json:"password,omitempty"`
+
+	// Current status of the instance, can be 'verified' or 'unverified'
+	Status string `json:"status,omitempty"`
+
+	// Valid events to be delivered for the instance
+	// charge.refunded
+	// charge.failed
+	// charge.cancelled
+	// charge.created
+	// charge.succeeded
+	// charge.rescored.to.decline
+	// subscription.charge.failed
+	// payout.created
+	// payout.succeeded
+	// payout.failed
+	// transfer.succeeded
+	// fee.succeeded
+	// fee.refund.succeeded
+	// spei.received
+	// chargeback.created
+	// chargeback.rejected
+	// chargeback.accepted
+	// order.created
+	// order.activated
+	// order.payment.received
+	// order.completed
+	// order.expired
+	// order.cancelled
+	// order.payment.cancelled
+	EventTypes []string `json:"event_types,omitemtpy"`
+}
